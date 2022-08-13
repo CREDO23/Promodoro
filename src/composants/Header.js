@@ -8,9 +8,7 @@ const Header = () => {
 		<header>
 			<div>
 				<p>Break Length</p>
-				<span className='breack-length'>
-					{state.breakLength.value}
-				</span>
+				<span className='breack-length'>{state.breaK.value}</span>
 				<div>
 					<button
 						disabled={state.inProgress}
@@ -31,9 +29,7 @@ const Header = () => {
 			<div className='divider'></div>
 			<div>
 				<p>Session Length</p>
-				<span className='session-length'>
-					{state.sessionLength.value}
-				</span>
+				<span className='session-length'>{state.session.value}</span>
 				<div>
 					<button
 						disabled={state.inProgress}

@@ -7,36 +7,43 @@ import 'react-circular-progressbar/dist/styles.css';
 
 const Main = () => {
 	const { state, dispatch } = useContext(Store);
-	let { sessionLength, breakLength } = state;
+	let { session, breaK } = state;
 
-	const [minutesLeft, setMinutesLeft] = useState(sessionLength.value);
+	const [minutesLeft, setMinutesLeft] = useState(session.value);
 	const [secondesLeft, setSecondesLeft] = useState(0);
 
 	let minutesRef = useRef(minutesLeft);
 	let secondsRef = useRef(secondesLeft);
-	const curentlength = useRef(sessionLength.value);
+
+	const curentlengthSession = useRef(session.value);
+	const curentlengthBreak = useRef(breaK.value);
+
 	const interval = useRef();
 
-	const parseHandle = (num) => {
+	const parseNumberHandle = (num) => {
 		return num.toString().length > 1 ? num : `0${num}`;
 	};
 
 	const countFunction = (minutes, secondes = 0) => {
-		let length = curentlength.current;
+		let lengthSession = curentlengthSession.current;
+		let lengthBreak = curentlengthBreak.current;
 
-		[secondsRef.current, minutesRef.current] =
-			length !== sessionLength.value
-				? [0, sessionLength.value]
-				: [secondes, minutes];
+		session.isCurent
+			? ([secondsRef.current, minutesRef.current] =
+					lengthSession !== session.value
+						? [0, session.value]
+						: [secondes, minutes])
+			: ([secondsRef.current, minutesRef.current] =
+					lengthBreak !== breaK.value
+						? [0, breaK.value]
+						: [secondes, minutes]);
 
-		// secondsRef.current =
-		// 	length !== sessionLength.value ? 0 : secondes;
-		// minutesRef.current =
-		// 	length !== sessionLength.value ? sessionLength.value : minutes;
 		setSecondesLeft(secondsRef.current);
 		setSecondesLeft(minutesRef.current);
 
-		curentlength.current = sessionLength.value;
+		curentlengthSession.current = session.value;
+		curentlengthBreak.current = breaK.value;
+
 		interval.current = setInterval(() => {
 			if (secondsRef.current > 0) {
 				secondsRef.current--;
@@ -52,9 +59,12 @@ const Main = () => {
 				minutesRef.current === 0
 			) {
 				clearInterval(interval.current);
-				dispatch({ type: 'PLAY_PAUSE' });
+				dispatch({ type: 'MOVE_TO' });
+				session.isCurent
+					? countFunction(breaK.value, 0)
+					: countFunction(session.value, 0);
 			}
-		}, 1000);
+		}, 500);
 	};
 
 	return (
@@ -64,23 +74,35 @@ const Main = () => {
 					<CircularProgressbarWithChildren
 						className='progress'
 						value={60}>
-						<p style={{ fontSize: 20, fontWeight: 300 }}>Session</p>
+						<p style={{ fontSize: 20, fontWeight: 300 }}>
+							{session.isCurent ? 'Session' : 'Break'}
+						</p>
 						<h2 style={{ fontSize: 50 }}>
 							{' '}
 							<span>
 								{state.inProgress
 									? minutesRef.current || secondsRef.current
-										? parseHandle(minutesRef.current)
-										: parseHandle(sessionLength.value)
-									: curentlength.current !== sessionLength.value
-									? parseHandle(sessionLength.value)
-									: parseHandle(minutesRef.current)}
+										? parseNumberHandle(minutesRef.current)
+										: session.isCurent
+										? parseNumberHandle(session.value)
+										: parseNumberHandle(breaK.value)
+									: curentlengthSession.current !== session.value
+									? session.isCurent
+										? parseNumberHandle(session.value)
+										: parseNumberHandle(minutesRef.current)
+									: curentlengthBreak.current !== breaK.value
+									? parseNumberHandle(breaK.value)
+									: parseNumberHandle(minutesRef.current)}
 							</span>{' '}
 							:{' '}
 							<span>
-								{curentlength.current !== sessionLength.value
-									? parseHandle(0)
-									: parseHandle(secondsRef.current) ?? parseHandle(0)}
+								{curentlengthSession.current !== session.value ||
+								curentlengthBreak.current !== breaK.value
+									? session.isCurent
+										? parseNumberHandle(0)
+										: parseNumberHandle(0)
+									: parseNumberHandle(secondsRef.current) ??
+									  parseNumberHandle(0)}
 							</span>{' '}
 						</h2>
 					</CircularProgressbarWithChildren>
@@ -93,8 +115,9 @@ const Main = () => {
 							? countFunction(
 									minutesRef.current !== 0 || secondsRef.current
 										? minutesRef.current
-										: sessionLength.value,
+										: session.value,
 									secondsRef.current !== 0 ? secondsRef.current : 0,
+									session.value,
 							  )
 							: clearInterval(interval.current);
 

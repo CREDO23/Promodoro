@@ -7,8 +7,8 @@ import { createContext, useReducer } from 'react';
 export const Store = createContext();
 
 const initialState = {
-	sessionLength: { value: 30, isCurent: true },
-	breakLength: { value: 5, isCurent: false },
+	session: { value: 30, isCurent: true },
+	breaK: { value: 5, isCurent: false },
 	inProgress: false,
 };
 
@@ -16,29 +16,27 @@ const reducer = (state, action) => {
 	let newState = { ...state };
 	switch (action.type) {
 		case 'INC_SESSION_TIME':
-			newState.sessionLength.value++;
+			newState.session.value++;
 			return newState;
 		case 'INC_BREAK_TIME':
-			newState.breakLength.value++;
+			newState.breaK.value++;
 			return newState;
 		case 'DEC_SESSION_TIME':
-			newState.sessionLength.value--;
+			newState.session.value--;
 			return newState;
 		case 'DEC_BREAK_TIME':
-			newState.breakLength.value--;
+			newState.breaK.value--;
 			return newState;
 		case 'PLAY_PAUSE':
 			newState.inProgress = !newState.inProgress;
 			return newState;
-
 		case 'MOVE_TO':
-			newState.sessionLength.isCurent =
-				!newState.sessionLength.isCurent;
-			newState.breakLength.isCurent = !newState.breakLength.isCurent;
+			newState.session.isCurent = !newState.session.isCurent;
+			newState.breaK.isCurent = !newState.breaK.isCurent;
 			return newState;
 		case 'RESET':
-			newState.breakLength.value = 5;
-			newState.sessionLength.value = 30;
+			newState.breaK.value = 5;
+			newState.session.value = 30;
 			return newState;
 		default:
 			return state;
