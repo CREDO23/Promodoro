@@ -80,7 +80,7 @@ const Main = () => {
 					? countFunction(breaK.value, 0)
 					: countFunction(session.value, 0);
 			}
-		}, 500);
+		}, 1000);
 	};
 
 	return (

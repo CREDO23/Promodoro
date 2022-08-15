@@ -20,7 +20,8 @@ const Header = () => {
 					<button
 						disabled={state.inProgress}
 						onClick={() => {
-							dispatch({ type: 'DEC_BREAK_TIME' });
+							if (state.breaK.value > 0)
+								dispatch({ type: 'DEC_BREAK_TIME' });
 						}}>
 						{<BiDownArrow />}
 					</button>
@@ -41,7 +42,8 @@ const Header = () => {
 					<button
 						disabled={state.inProgress}
 						onClick={() => {
-							dispatch({ type: 'DEC_SESSION_TIME' });
+							if (state.session.value > 0)
+								dispatch({ type: 'DEC_SESSION_TIME' });
 						}}>
 						{<BiDownArrow />}
 					</button>
