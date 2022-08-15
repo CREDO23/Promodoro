@@ -25,6 +25,20 @@ const Main = () => {
 		return num.toString().length > 1 ? num : `0${num}`;
 	};
 
+	const resetFunction = () => {
+		clearInterval(interval.current);
+		dispatch({ type: 'RESET' });
+		state.inProgress
+			? dispatch({ type: 'PLAY_PAUSE' })
+			: (secondsRef.current = 0);
+		minutesRef.current = 30;
+		secondsRef.current = 0;
+		if (breaK.isCurent) {
+			breaK.isCurent = false;
+			session.isCurent = true;
+		}
+	};
+
 	const countFunction = (minutes, secondes = 0) => {
 		let lengthSession = curentlengthSession.current;
 		let lengthBreak = curentlengthBreak.current;
@@ -124,14 +138,7 @@ const Main = () => {
 					}}>
 					{state.inProgress ? <FiPause /> : <FiPlay />}
 				</button>
-				<button
-					onClick={() => {
-						minutesRef.current = session.value;
-						secondsRef.current = 0;
-						session.isCurent = true;
-						breaK.isCurent = false;
-						dispatch({ type: 'RESET' });
-					}}>
+				<button onClick={() => resetFunction()}>
 					<FiRefreshCw />
 				</button>
 			</footer>
