@@ -2,8 +2,7 @@
 import { Store } from '../App';
 import { FiPlay, FiPause, FiRefreshCw } from 'react-icons/fi';
 import { useContext, useRef, useState } from 'react';
-import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
-import 'react-circular-progressbar/dist/styles.css';
+import sound from '../ringtones/mixkit-toy-telephone-ring-1351.wav';
 
 const Main = () => {
 	const { state, dispatch } = useContext(Store);
@@ -19,6 +18,8 @@ const Main = () => {
 	const curentlengthBreak = useRef(breaK.value);
 
 	const interval = useRef();
+
+	const ring = new Audio(sound);
 
 	const parseNumberHandle = (num) => {
 		return num.toString().length > 1 ? num : `0${num}`;
@@ -39,7 +40,7 @@ const Main = () => {
 						: [secondes, minutes]);
 
 		setSecondesLeft(secondsRef.current);
-		setSecondesLeft(minutesRef.current);
+		setMinutesLeft(minutesRef.current);
 
 		curentlengthSession.current = session.value;
 		curentlengthBreak.current = breaK.value;
@@ -58,6 +59,7 @@ const Main = () => {
 				secondsRef.current === 0 &&
 				minutesRef.current === 0
 			) {
+				ring.play();
 				clearInterval(interval.current);
 				dispatch({ type: 'MOVE_TO' });
 				session.isCurent
@@ -70,10 +72,11 @@ const Main = () => {
 	return (
 		<>
 			<section>
-				<div>
-					<CircularProgressbarWithChildren
-						className='progress'
-						value={60}>
+				<div
+					className={
+						session.isCurent ? 'circle inSession' : 'circle inBreak'
+					}>
+					<div>
 						<p style={{ fontSize: 20, fontWeight: 300 }}>
 							{session.isCurent ? 'Session' : 'Break'}
 						</p>
@@ -96,16 +99,13 @@ const Main = () => {
 							</span>{' '}
 							:{' '}
 							<span>
-								{curentlengthSession.current !== session.value ||
-								curentlengthBreak.current !== breaK.value
-									? session.isCurent
-										? parseNumberHandle(0)
-										: parseNumberHandle(0)
-									: parseNumberHandle(secondsRef.current) ??
-									  parseNumberHandle(0)}
+								{curentlengthBreak.current !== breaK.value ||
+								curentlengthSession.current !== session.value
+									? parseNumberHandle(0)
+									: parseNumberHandle(secondsRef.current)}
 							</span>{' '}
 						</h2>
-					</CircularProgressbarWithChildren>
+					</div>
 				</div>
 			</section>
 			<footer>
@@ -117,7 +117,6 @@ const Main = () => {
 										? minutesRef.current
 										: session.value,
 									secondsRef.current !== 0 ? secondsRef.current : 0,
-									session.value,
 							  )
 							: clearInterval(interval.current);
 
@@ -127,6 +126,10 @@ const Main = () => {
 				</button>
 				<button
 					onClick={() => {
+						minutesRef.current = session.value;
+						secondsRef.current = 0;
+						session.isCurent = true;
+						breaK.isCurent = false;
 						dispatch({ type: 'RESET' });
 					}}>
 					<FiRefreshCw />

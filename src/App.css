@@ -9,7 +9,6 @@
    --blue-clair : #043F8C;
    --blue-foncé : #021D40;
    --yellow : #F2CB05;
-   --red : #F2421B;
    --white : #dde1e7;
 }
 body{
@@ -99,4 +98,28 @@ footer button{
     width: 100px;
     height: 50px;
     box-shadow: -3px -3px 7px #ffffff80 ,3px 3px 7px rgba(94,104,121,.288) ;
+}
+.circle {
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.circle div {
+    width: 90%;
+    height: 90%;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.inSession{
+    background: var(--blue-clair);
+}
+.inBreak{
+    background: var(--yellow);
 }
